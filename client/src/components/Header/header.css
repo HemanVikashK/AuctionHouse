@@ -1,0 +1,81 @@
+/* Navigation Bar */
+.nav {
+  display: flex;
+  justify-content: space-between; /* Place items at the ends */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.13);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Site Title */
+.site-title {
+  font-size: 1.8rem;
+  font-family: "Open Sans", sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  color: #4b3621;
+}
+
+/* Navigation List */
+.nav-items {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav-items li {
+  margin-right: 15px;
+}
+
+.username {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Buttons */
+.button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: "Roboto", sans-serif;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+.button:focus {
+  outline: none;
+}
+
+/* Navigation Links */
+.nav-link {
+  text-decoration: none;
+  margin: 0 10px;
+
+  padding-right: 0px;
+  font-size: 25px;
+}
+
+.nav-link:hover {
+  background-color: #4b3621;
+  transition: background-color 0.3s ease;
+  color: #fff !important; /* Change font color on hover */
+
+  margin: 0 10px !important;
+}
+
+/* Login/Signup Button */
+.login-signup {
+  display: flex;
+  align-items: center;
+}
