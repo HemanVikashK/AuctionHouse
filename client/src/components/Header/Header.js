@@ -28,10 +28,11 @@ const Header = ({ setShowLogin }) => {
             style={{
               color: "#49331e",
               textDecoration: "none",
-              margin: "0 10px",
+
               borderRight: "1px solid black",
               paddingRight: "45px",
-              fontSize: "25px",
+              paddingLeft: "45px",
+              fontSize: "18px",
             }}
           >
             Home
@@ -44,10 +45,11 @@ const Header = ({ setShowLogin }) => {
             style={{
               color: "#49331e",
               textDecoration: "none",
-              margin: "0 10px",
+
               borderRight: "1px solid black",
               paddingRight: "45px",
-              fontSize: "25px",
+              paddingLeft: "45px",
+              fontSize: "18px",
             }}
           >
             Bid Now
@@ -60,10 +62,11 @@ const Header = ({ setShowLogin }) => {
             style={{
               color: "#49331e",
               textDecoration: "none",
-              margin: "0 10px",
+
               borderRight: "1px solid black",
               paddingRight: "45px",
-              fontSize: "25px",
+              paddingLeft: "45px",
+              fontSize: "18px",
             }}
           >
             Sell Now
@@ -76,10 +79,11 @@ const Header = ({ setShowLogin }) => {
             style={{
               color: "#49331e",
               textDecoration: "none",
-              margin: "0 10px",
+
               borderRight: "1px solid black",
               paddingRight: "45px",
-              fontSize: "25px",
+              paddingLeft: "45px",
+              fontSize: "18px",
             }}
           >
             Bid History
@@ -93,7 +97,7 @@ const Header = ({ setShowLogin }) => {
               color: "#49331e",
               textDecoration: "none",
               marginRight: "10px",
-              fontSize: "25px",
+              fontSize: "18px",
             }}
           >
             About Us

@@ -51,6 +51,7 @@
 
 .button:hover {
   background-color: #555;
+  border-radius: 7px;
 }
 
 .button:focus {
@@ -70,8 +71,7 @@
   background-color: #4b3621;
   transition: background-color 0.3s ease;
   color: #fff !important; /* Change font color on hover */
-
-  margin: 0 10px !important;
+  border-radius: 8px;
 }
 
 /* Login/Signup Button */

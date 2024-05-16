@@ -1,6 +1,6 @@
 .hbox {
-  height: 91vh;
-
+  height: 100vh;
+  background-image: url("./homeimg.jpeg");
   background-size: cover; /* Cover the entire background */
   background-position: center; /* Center the background image */
   background-repeat: no-repeat; /* Do not repeat the background image */
@@ -23,8 +23,8 @@
   font-weight: 600;
   line-height: normal;
   margin: 0;
-  bottom: 230px;
-  right: 150px;
+  bottom: 50px;
+  left: 380px;
   outline: none;
   padding: 16px 24px;
   text-align: center;
@@ -65,8 +65,8 @@
   color: #ffffff;
   cursor: pointer;
   position: absolute;
-  bottom: 230px;
-  right: 400px;
+  bottom: 50px;
+  left: 130px;
   font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 16px;

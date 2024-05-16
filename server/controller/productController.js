@@ -23,6 +23,7 @@ const s3 = new S3Client({
   region: bucketregion,
 });
 const randomImgName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
+
 exports.createProd = async (req, res) => {
   try {
     console.log(req.body);
@@ -42,11 +43,28 @@ exports.createProd = async (req, res) => {
     const command = new PutObjectCommand(params);
 
     await s3.send(command);
-    const { name, description, starting_price, userid } = req.body;
+    const {
+      name,
+      description,
+      starting_price,
+      userid,
+      auction_start_time,
+      main_category,
+      sub_category,
+    } = req.body;
 
     const newProduct = await pool.query(
-      "INSERT INTO products (name, description, starting_price,user_id,image_url) VALUES ($1, $2, $3,$4,$5) RETURNING *",
-      [name, description, starting_price, userid, imgId]
+      "INSERT INTO products (name, description, starting_price, user_id, image_url, created_at, auction_start_time,main_category,sub_category) VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, $6,$7,$8) RETURNING *",
+      [
+        name,
+        description,
+        starting_price,
+        userid,
+        imgId,
+        auction_start_time,
+        main_category,
+        sub_category,
+      ]
     );
 
     res.status(201).json({

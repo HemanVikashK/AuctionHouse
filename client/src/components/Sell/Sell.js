@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../AuthContext";
+import "./sell.css"; // Import the CSS file
 
 function Sell() {
   const [file, setFile] = useState(null);
@@ -7,6 +8,9 @@ function Sell() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
+  const [auctionStartTime, setAuctionStartTime] = useState("");
+  const [mainCategory, setMainCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
 
   const { user } = useAuth();
   const submit = async (event) => {
@@ -21,18 +25,24 @@ function Sell() {
     formData.append("description", description);
     formData.append("starting_price", startingPrice);
     formData.append("userid", user.id);
+    formData.append("auction_start_time", auctionStartTime);
+    formData.append("main_category", mainCategory);
+    formData.append("sub_category", subCategory);
 
     try {
       const response = await fetch("http://localhost:5000/product/create", {
         method: "POST",
         body: formData,
       });
+
       if (response.ok) {
         setFile(null);
         setPreviewUrl(null);
         setName("");
         setDescription("");
         setStartingPrice("");
+        setMainCategory("");
+        setSubCategory("");
         console.log("Post submitted successfully!");
       } else {
         console.error("Failed to submit post:", await response.text());
@@ -53,32 +63,22 @@ function Sell() {
     setPreviewUrl(URL.createObjectURL(selectedFile));
   };
 
+  const handleMainCategoryClick = (category) => {
+    setMainCategory(mainCategory === category ? "" : category);
+  };
+
+  const handleSubCategoryClick = (category) => {
+    setSubCategory(subCategory === category ? "" : category);
+  };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "auto",
-        width: "50%",
-        margin: "0 auto",
-        marginTop: "50px",
-        marginBottom: "50px",
-        backdropFilter: "blur(16px) saturate(180%)",
-        WebkitBackdropFilter: "blur(16px) saturate(180%)",
-        backgroundColor: "rgba(20, 24, 30, 0.25)",
-        borderRadius: "12px",
-        border: "1px solid rgba(255, 255, 255, 0.125)",
-        padding: "38px",
-        filter: "drop-shadow(0 30px 10px rgba(0, 0, 0, 0.125))",
-      }}
-    >
+    <div className="container10">
       {!user ? (
         <div style={{ textAlign: "center", color: "black", fontSize: "50px" }}>
           Please login first.
         </div>
       ) : (
-        <div style={{ width: "90%" }}>
+        <div style={{ width: "100%", display: "flex" }}>
           <div
             style={{
               border: "1px solid #ccc",
@@ -87,19 +87,6 @@ function Sell() {
             }}
           >
             <form onSubmit={submit}>
-              <input onChange={handleFileChange} type="file" accept="image/*" />
-              {previewUrl && (
-                <div>
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    style={{ maxWidth: "100%", maxHeight: "300px" }}
-                  />
-                  <button type="button" onClick={removeImage}>
-                    Remove
-                  </button>
-                </div>
-              )}
               <input
                 type="text"
                 placeholder="Name"
@@ -114,12 +101,116 @@ function Sell() {
                 style={{ width: "100%", marginBottom: "10px", padding: "5px" }}
               />
               <input
+                type="datetime-local"
+                placeholder="Auction Start Time"
+                value={auctionStartTime}
+                onChange={(e) => setAuctionStartTime(e.target.value)}
+                style={{ width: "100%", marginBottom: "10px", padding: "5px" }}
+              />
+
+              <input
                 type="number"
                 placeholder="Starting Price"
                 value={startingPrice}
                 onChange={(e) => setStartingPrice(e.target.value)}
                 style={{ width: "100%", marginBottom: "10px", padding: "5px" }}
               />
+              <h7>Category</h7>
+              <div className="tag-container">
+                <div
+                  className={`tag ${
+                    mainCategory === "Antique" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("Antique")}
+                >
+                  Antique
+                </div>
+                <div
+                  className={`tag ${
+                    mainCategory === "Collectible" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("Collectible")}
+                >
+                  Collectible
+                </div>
+                <div
+                  className={`tag ${
+                    mainCategory === "HandCrafted" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("HandCrafted")}
+                >
+                  HandCrafted
+                </div>
+                <div
+                  className={`tag ${
+                    mainCategory === "LimitedEdition" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("LimitedEdition")}
+                >
+                  Limited Edition
+                </div>
+                <div
+                  className={`tag ${
+                    mainCategory === "Luxury" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("Luxury")}
+                >
+                  Luxury
+                </div>
+                <div
+                  className={`tag ${
+                    mainCategory === "Pre-Owned" ? "selected" : ""
+                  }`}
+                  onClick={() => handleMainCategoryClick("Pre-Owned")}
+                >
+                  Pre-Owned
+                </div>
+              </div>
+              <h7>Sub-Category</h7>
+              <div className="tag-container">
+                <div
+                  className={`tag ${
+                    subCategory === "Furniture" ? "selected" : ""
+                  }`}
+                  onClick={() => handleSubCategoryClick("Furniture")}
+                >
+                  Furniture
+                </div>
+                <div
+                  className={`tag ${
+                    subCategory === "Electronics" ? "selected" : ""
+                  }`}
+                  onClick={() => handleSubCategoryClick("Electronics")}
+                >
+                  Electronics
+                </div>
+                <div
+                  className={`tag ${
+                    subCategory === "Fasion" ? "selected" : ""
+                  }`}
+                  onClick={() => handleSubCategoryClick("Fasion")}
+                >
+                  Fasion
+                </div>
+                <div
+                  className={`tag ${
+                    subCategory === "Automobiles" ? "selected" : ""
+                  }`}
+                  onClick={() => handleSubCategoryClick("Automobiles")}
+                >
+                  Automobiles
+                </div>
+                <div
+                  className={`tag ${
+                    subCategory === "Beauty & Toys" ? "selected" : ""
+                  }`}
+                  onClick={() => handleSubCategoryClick("Beauty & Toys")}
+                >
+                  Beauty & Toys
+                </div>
+                {/* Add more subcategory tags here */}
+              </div>
+
               <button
                 type="submit"
                 style={{
@@ -135,6 +226,30 @@ function Sell() {
               </button>
             </form>
           </div>
+          {!previewUrl ? (
+            <div className="upload-container">
+              <input onChange={handleFileChange} type="file" accept="image/*" />
+            </div>
+          ) : (
+            <>
+              <div className="upload-container">
+                <div>
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="image-preview"
+                  />
+                </div>
+                <button
+                  className="remove-button"
+                  type="button"
+                  onClick={removeImage}
+                >
+                  Remove
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

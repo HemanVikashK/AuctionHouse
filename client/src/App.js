@@ -33,7 +33,7 @@ function App() {
         </GoogleOAuthProvider>
 
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/bid-now" element={<Prod />} />
           <Route path="/sell-now" element={<Sell />} />
           <Route path="/bid-history" element={<History />} />

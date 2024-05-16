@@ -1,14 +1,94 @@
 @import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
 
+/* CSS */
+.container10 {
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border-radius: 24px;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+    rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  fill: currentcolor;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row; /* Change flex direction to row */
+  flex-wrap: wrap; /* Allow items to wrap to the next row */
+  justify-content: flex-start;
+  text-align: center;
+  width: 95%;
+  height: auto;
+  margin: 30px;
+  justify-content: center;
+  letter-spacing: 0.25px;
+  line-height: normal;
+  max-width: 100%;
+  overflow: visible;
+  padding: 2px 24px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
+  will-change: transform, opacity;
+  z-index: 0;
+}
+
+.container10:active {
+  box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%),
+    0 8px 12px 6px rgb(60 64 67 / 15%);
+  outline: none;
+}
+
+.container10:focus {
+  outline: none;
+  border: 2px solid #4285f4;
+}
+
+.container10:not(:disabled) {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 1px 3px 0,
+    rgba(60, 64, 67, 0.15) 0 4px 8px 3px;
+}
+
+.container10:not(:disabled):hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 2px 3px 0,
+    rgba(60, 64, 67, 0.15) 0 6px 10px 4px;
+}
+
+.container10:not(:disabled):focus {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 1px 3px 0,
+    rgba(60, 64, 67, 0.15) 0 4px 8px 3px;
+}
+
+.container10:not(:disabled):active {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 4px 4px 0,
+    rgba(60, 64, 67, 0.15) 0 8px 12px 6px;
+}
+
+.container10:disabled {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 1px 3px 0,
+    rgba(60, 64, 67, 0.15) 0 4px 8px 3px;
+}
+
 .container10 {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(20, 24, 30, 0.25);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.125);
   padding: 38px;
-  filter: drop-shadow(0 30px 10px rgba(0, 0, 0, 0.125));
+  filter: drop-shadow(10px 30px 10px rgba(0, 0, 0, 0.125));
   display: flex;
   flex-direction: row; /* Change flex direction to row */
   flex-wrap: wrap; /* Allow items to wrap to the next row */
@@ -31,17 +111,17 @@
   height: 80%;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.255);
+  border: 1px solid rgba(67, 67, 67, 0.255);
 }
 
 h1 {
-  color: rgba(255, 255, 255, 0.98);
+  color: rgba(0, 0, 0, 0.98);
   text-transform: uppercase;
   font-size: 1.4rem;
 }
 
 p {
-  color: #fff;
+  color: #000000;
 
   text-align: center;
   font-size: 0.5rem;
@@ -70,15 +150,16 @@ p {
 
 .outline {
   background: transparent;
-  color: rgba(11, 12, 12, 0.9);
+  color: rgba(0, 0, 0, 0.9);
   border: 1px solid rgba(30, 33, 33, 0.6);
   transition: all 0.3s ease;
+  margin-bottom: 20px;
 }
 
 .outline:hover {
   transform: scale(1.125);
-  color: rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.9);
+  color: rgba(0, 0, 0, 0.9);
+  border-color: rgba(0, 0, 0, 0.9);
   transition: all 0.3s ease;
 }
 
@@ -92,7 +173,7 @@ p {
 
 .fill:hover {
   transform: scale(1.125);
-  border-color: rgba(58, 15, 15, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
   filter: drop-shadow(0 10px 5px rgba(58, 4, 4, 0.125));
   transition: all 0.3s ease;
 }
@@ -101,7 +182,7 @@ p {
   width: 300px; /* Set a fixed width for each item */
   margin: 20px;
   padding: 20px;
-  border: 1px solid #ccc;
+
   border-radius: 5px;
   text-align: center;
 }
@@ -114,4 +195,7 @@ p {
 .product-image {
   max-width: 100%;
   height: auto;
+}
+.timer {
+  font-size: medium;
 }
