@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./prod.css";
-
+import { mainCategories, subCategories } from "./categories"; // Import the shared categories
+import { useNavigate } from "react-router-dom";
 const CountdownTimer = ({ time, onTimerEnd }) => {
   const [remainingTime, setRemainingTime] = useState(time);
 
@@ -30,14 +31,21 @@ const CountdownTimer = ({ time, onTimerEnd }) => {
 function Prod() {
   const [products, setProducts] = useState([]);
   const [timerEndedProducts, setTimerEndedProducts] = useState([]);
+  const [mainCategory, setMainCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(8);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [mainCategory, subCategory, searchTerm, currentPage]);
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/product/allproducts");
+      const response = await fetch(
+        "http://localhost:5000/product/allproductsunsold"
+      );
       const data = await response.json();
       if (data.status) {
         const currentTime = new Date();
@@ -65,7 +73,25 @@ function Prod() {
         // Combine active timers and ended timers
         const sortedProducts = [...sortedActiveTimers, ...endedTimers];
 
-        setProducts(sortedProducts);
+        // Apply category and search filters
+        const filteredProducts = sortedProducts.filter((product) => {
+          return (
+            (!mainCategory || product.main_category === mainCategory) &&
+            (!subCategory || product.sub_category === subCategory) &&
+            (!searchTerm ||
+              product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          );
+        });
+
+        // Pagination
+        const indexOfLastProduct = currentPage * productsPerPage;
+        const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+        const currentProducts = filteredProducts.slice(
+          indexOfFirstProduct,
+          indexOfLastProduct
+        );
+
+        setProducts(currentProducts);
       } else {
         console.error("Error fetching products");
       }
@@ -73,6 +99,28 @@ function Prod() {
       console.error(error);
     }
   };
+
+  const navigate = useNavigate();
+
+  const handleJoinAuction = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
+  // Logic for displaying page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(products.length / productsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map((number) => (
+    <li
+      key={number}
+      className={currentPage === number ? "active" : ""}
+      onClick={() => setCurrentPage(number)}
+    >
+      {number}
+    </li>
+  ));
 
   const handleTimerEnd = (productId) => {
     setProducts((prevProducts) => {
@@ -90,12 +138,58 @@ function Prod() {
     });
   };
 
+  const handleMainCategoryClick = (category) => {
+    setMainCategory(mainCategory === category ? "" : category);
+  };
+
+  const handleSubCategoryClick = (category) => {
+    setSubCategory(subCategory === category ? "" : category);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
   return (
     <div>
+      <h3 style={{ flex: "none", width: "100%", textAlign: "center" }}>
+        Refresh 10 minutes before auction starts to join
+      </h3>
       <div className="filters container">
-        <div></div>
+        <div className="tag-container">
+          {mainCategories.map((category) => (
+            <div
+              key={category}
+              className={`tag ${mainCategory === category ? "selected" : ""}`}
+              onClick={() => handleMainCategoryClick(category)}
+            >
+              {category}
+            </div>
+          ))}
+        </div>
+        <div className="tag-container">
+          {subCategories.map((category) => (
+            <div
+              key={category}
+              className={`tag ${subCategory === category ? "selected" : ""}`}
+              onClick={() => handleSubCategoryClick(category)}
+            >
+              {category}
+            </div>
+          ))}
+        </div>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ margin: "10px", padding: "5px" }}
+        />
       </div>
-      <h3 style={{ flex: "none" }}>All Products</h3>
       <div className="container10">
         {[...timerEndedProducts, ...products].map((product) => (
           <div key={product.id} className="wrapper">
@@ -109,16 +203,9 @@ function Prod() {
             <h1>{product.name}</h1>
             <p style={{ fontSize: "medium" }}>
               Starting From
-              <br></br>₹{product.starting_price}
+              <br />₹{product.starting_price}
             </p>
-            <div
-              className="tag-container"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div className="tag-container">
               <div className={`tag`}>{product.main_category}</div>
               <div className={`tag`}>{product.sub_category}</div>
             </div>
@@ -138,7 +225,12 @@ function Prod() {
                   {new Date(product.auction_start_time) - new Date() > 0 &&
                     new Date(product.auction_start_time) - new Date() <
                       10 * 60 * 1000 && (
-                      <button className="btn fill">JOIN LIVE AUCTION</button>
+                      <button
+                        className="btn fill"
+                        onClick={() => handleJoinAuction(product.id)}
+                      >
+                        JOIN LIVE AUCTION
+                      </button>
                     )}
 
                   {new Date(product.auction_start_time) - new Date() < 0 && (
@@ -154,6 +246,27 @@ function Prod() {
           </div>
         ))}
       </div>
+      <ul
+        className="pagination"
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <li onClick={handlePrevPage}>
+          <button className="btn outline" style={{ marginRight: "10px" }}>
+            &laquo; Prev
+          </button>
+        </li>
+        {currentPage}
+        <li onClick={handleNextPage}>
+          <button className="btn outline" style={{ marginLeft: "10px" }}>
+            Next &raquo;
+          </button>
+        </li>
+      </ul>
     </div>
   );
 }

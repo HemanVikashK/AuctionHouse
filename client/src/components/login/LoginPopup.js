@@ -98,7 +98,15 @@ function LoginSignupContainer({ show, onHide }) {
     <div className={`container1 ${show ? "blur" : ""}`}>
       <div className={`form-container ${isLogin ? "login" : "signup"}`}>
         {isLogin ? (
-          <form onSubmit={handleLogin}>
+          <form
+            onSubmit={handleLogin}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
             <button className="close-btn" onClick={onHide}>
               X
             </button>
@@ -121,7 +129,7 @@ function LoginSignupContainer({ show, onHide }) {
               />
               <label>Password</label>
             </div>
-            <button className="logbtn" type="submit">
+            <button className="bid-history" type="submit">
               Login
             </button>
             <GoogleLogin
@@ -131,10 +139,17 @@ function LoginSignupContainer({ show, onHide }) {
               }}
               origin={"http://localhost:3000"}
             />
-            ;
           </form>
         ) : (
-          <form onSubmit={handleSignup}>
+          <form
+            onSubmit={handleSignup}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
             <button className="close-btn" onClick={onHide}>
               X
             </button>
@@ -174,13 +189,24 @@ function LoginSignupContainer({ show, onHide }) {
               }}
               origin={"http://localhost:3000"}
             />
-            ;
           </form>
         )}
         <br />
-        <button className="toggle" onClick={handleToggle}>
-          {isLogin ? "Sign Up" : "Login"}
-        </button>
+        {isLogin ? (
+          <p style={{ color: "#fff" }}>
+            Dont Have An Account?
+            <a className="toggle" onClick={handleToggle}>
+              SignUp
+            </a>
+          </p>
+        ) : (
+          <p style={{ color: "#fff" }}>
+            Already Have An Account?
+            <a className="toggle" onClick={handleToggle}>
+              Login
+            </a>
+          </p>
+        )}
 
         <br />
       </div>

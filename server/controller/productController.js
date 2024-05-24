@@ -141,7 +141,7 @@ exports.delProd = async (req, res) => {
 };
 exports.getProd = async (req, res) => {
   try {
-    const { id } = req.params; // Assuming product ID comes from URL params
+    const { id } = req.body; // Assuming product ID comes from URL params
 
     const product = await pool.query("SELECT * FROM products WHERE id = $1", [
       id,
@@ -169,9 +169,11 @@ exports.getProd = async (req, res) => {
   }
 };
 
-exports.getAllProd = async (req, res) => {
+exports.getAllProdUnSold = async (req, res) => {
   try {
-    const products = await pool.query("SELECT * FROM products");
+    const products = await pool.query(
+      "SELECT * FROM products WHERE status ='unsold'"
+    );
 
     for (const prod of products.rows) {
       if (prod.image_url) {
@@ -186,6 +188,48 @@ exports.getAllProd = async (req, res) => {
       }
     }
 
+    res.status(200).json({ status: true, data: products.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error getting products", status: false });
+  }
+};
+
+exports.getAllProdSold = async (req, res) => {
+  try {
+    const products = await pool.query(
+      "SELECT * FROM products WHERE status ='sold'"
+    );
+
+    for (const prod of products.rows) {
+      if (prod.image_url) {
+        const getObjectParams = {
+          Bucket: bucketName,
+          Key: prod.image_url,
+        };
+
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        prod.image_url = url;
+      }
+    }
+
+    res.status(200).json({ status: true, data: products.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error getting products", status: false });
+  }
+};
+
+exports.getAuctionResult = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const products = await pool.query(
+      "SELECT * FROM auction_results where product_id=$1",
+      [id]
+    );
+    console.log(products);
     res.status(200).json({ status: true, data: products.rows });
   } catch (error) {
     console.error(error);

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const socketIo = require("socket.io");
+const pool = require("./utils/db"); // Import the database connection
 
 const userRoute = require("./routes/userRoute");
 const prodRoute = require("./routes/productRoute");
@@ -23,40 +24,110 @@ const io = socketIo(server, {
   },
 });
 
-let currentBid = 0;
-let bidHistory = [];
-let soldTo = null;
+let rooms = {};
 
 io.on("connection", (socket) => {
-  console.log("New client connected");
-
-  socket.on("joinRoom", (roomId) => {
+  socket.on("joinRoom", (roomId, username) => {
     socket.join(roomId);
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
+    socket.roomId = roomId;
+    socket.username = username;
+    console.log(`Socket ${username} joined room ${roomId}`);
+
+    if (!rooms[roomId]) {
+      rooms[roomId] = {
+        users: [],
+        currentBid: 0,
+        bidHistory: [],
+        soldTo: "",
+        chatMessages: [], // Add chatMessages array
+      };
+    }
+    rooms[roomId].users.push(username);
+    io.to(roomId).emit("usersOnline", rooms[roomId].users);
   });
 
-  socket.on("leaveRoom", (roomId) => {
-    socket.leave(roomId);
-    console.log(`Socket ${socket.id} left room ${roomId}`);
-  });
-
-  socket.on("bid", ({ amount, roomId }) => {
-    if (!soldTo) {
-      currentBid = amount;
-      bidHistory.push({ user: socket.id, amount });
-      io.to(roomId).emit("bidUpdate", { currentBid, bidHistory });
+  socket.on("handleBid", (amount, roomId, user) => {
+    if (!rooms[roomId].soldTo) {
+      rooms[roomId].currentBid = amount;
+      rooms[roomId].bidHistory.push({ user, amount });
+      io.to(roomId).emit("bidUpdate", {
+        currentBid: rooms[roomId].currentBid,
+        bidHistory: rooms[roomId].bidHistory,
+      });
     }
   });
 
-  socket.on("confirmPurchase", (roomId) => {
-    if (!soldTo && currentBid > 0) {
-      soldTo = bidHistory[bidHistory.length - 1].user;
-      io.to(roomId).emit("purchaseConfirmed", soldTo);
+  socket.on("confirmPurchase", async (prodid) => {
+    if (!rooms[socket.roomId].soldTo && rooms[socket.roomId].currentBid > 0) {
+      const highestBidder =
+        rooms[socket.roomId].bidHistory[
+          rooms[socket.roomId].bidHistory.length - 1
+        ].user;
+
+      rooms[socket.roomId].soldTo = highestBidder;
+      const lastbid = rooms[socket.roomId].currentBid;
+      try {
+        await pool.query(
+          "UPDATE products SET status = $1,sold_to=$2,sold_at=$3 WHERE id = $4",
+          ["sold", highestBidder, lastbid, prodid]
+        );
+        console.log(`Product ${prodid} marked as sold to ${highestBidder}`);
+      } catch (error) {
+        console.error("Error updating product status:", error);
+      }
+
+      // Insert the auction result into the auction_results table
+      try {
+        await pool.query(
+          "INSERT INTO auction_results (product_id, buyer, bids) VALUES ($1, $2, $3)",
+          [
+            prodid,
+            highestBidder,
+            JSON.stringify(rooms[socket.roomId].bidHistory),
+          ]
+        );
+        console.log(
+          `Auction result for product ${prodid} recorded successfully`
+        );
+      } catch (error) {
+        console.error("Error inserting auction result:", error);
+      }
+
+      io.to(socket.roomId).emit(
+        "purchaseConfirmed",
+        rooms[socket.roomId].soldTo
+      );
+    }
+  });
+
+  socket.on("sendChatMessage", (message) => {
+    const { roomId, username } = socket;
+    if (rooms[roomId]) {
+      const chatMessage = { user: username, message: message.message };
+      rooms[roomId].chatMessages.push(chatMessage);
+      io.to(roomId).emit("chatMessage", chatMessage);
+    }
+  });
+
+  socket.on("leaveRoom", () => {
+    if (rooms[socket.roomId]) {
+      socket.leave(socket.roomId);
+      console.log(`Socket ${socket.username} left room ${socket.roomId}`);
+      rooms[socket.roomId].users = rooms[socket.roomId].users.filter(
+        (user) => user !== socket.username
+      );
+      io.to(socket.roomId).emit("usersOnline", rooms[socket.roomId].users);
     }
   });
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
+    if (rooms[socket.roomId]) {
+      rooms[socket.roomId].users = rooms[socket.roomId].users.filter(
+        (user) => user !== socket.username
+      );
+      io.to(socket.roomId).emit("usersOnline", rooms[socket.roomId].users);
+    }
   });
 });
 
