@@ -15,9 +15,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (token) => {
     try {
-      const response = await fetch("http://localhost:5000/user/profile", {
-        headers: { authorization: token },
-      });
+      const response = await fetch(
+        "https://auction-house-backend.vercel.app/user/profile",
+        {
+          headers: { authorization: token },
+        }
+      );
       const data = await response.json();
       setUser(data.user);
       setSignedIn(true);

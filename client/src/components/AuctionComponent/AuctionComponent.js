@@ -27,7 +27,9 @@ const AuctionComponent = () => {
   useEffect(() => {
     if (!user) return;
 
-    socketRef.current = socketIOClient("http://localhost:5000");
+    socketRef.current = socketIOClient(
+      "https://auction-house-backend.vercel.app"
+    );
     const socket = socketRef.current;
 
     fetchProdDetails(prodid);
@@ -89,11 +91,14 @@ const AuctionComponent = () => {
   }, [timer]);
 
   const fetchProdDetails = async (prodid) => {
-    const response = await fetch("http://localhost:5000/product/prod", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: prodid }),
-    });
+    const response = await fetch(
+      "https://auction-house-backend.vercel.app/product/prod",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: prodid }),
+      }
+    );
     const data = await response.json();
     console.log(data);
     setProductDetails(data.data);

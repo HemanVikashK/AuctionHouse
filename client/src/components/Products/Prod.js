@@ -44,7 +44,7 @@ function Prod() {
   const fetchProducts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/product/allproductsunsold"
+        "https://auction-house-backend.vercel.app/product/allproductsunsold"
       );
       const data = await response.json();
       if (data.status) {
