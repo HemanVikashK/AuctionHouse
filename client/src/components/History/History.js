@@ -23,7 +23,7 @@ function History() {
   const fetchSoldProducts = async () => {
     try {
       const response = await fetch(
-        "https://auction-house-backend.vercel.app/product/allproductssold"
+        "http://13.233.254.58:5000/product/allproductssold"
       );
       const data = await response.json();
       if (data.status) {
@@ -59,7 +59,7 @@ function History() {
   const handleViewAuction = async (productId) => {
     console.log(productId);
     const response = await fetch(
-      `https://auction-house-backend.vercel.app/product/auctionresult/${productId}`
+      `http://13.233.254.58:5000/product/auctionresult/${productId}`
     );
     const data = await response.json();
     console.log(data);

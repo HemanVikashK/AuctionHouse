@@ -10,7 +10,7 @@ const prodRoute = require("./routes/productRoute");
 const app = express();
 
 const corsOptions = {
-  origin: "https://auction-house-chi.vercel.app", // Your frontend URL
+  origin: "http://13.233.254.58:3000", // Your frontend URL
   methods: ["GET", "POST"],
   credentials: true,
 };
@@ -25,7 +25,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: "https://auction-house-chi.vercel.app", // Your frontend URL
+    origin: "http://13.233.254.58:3000", // Your frontend URL
     methods: ["GET", "POST"],
     credentials: true,
   },
